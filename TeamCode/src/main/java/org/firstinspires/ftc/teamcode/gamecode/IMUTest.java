@@ -30,7 +30,7 @@ public class IMUTest extends AutoOpMode {
         Joules joules = new Joules();
 
 
-        BNO055IMU imu;
+        BNO055IMU imu = null;
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         imu.initialize(parameters);
 
@@ -44,12 +44,14 @@ public class IMUTest extends AutoOpMode {
         telemetry.addData("angle3", angles.thirdAngle);
 
 
+        double direction = angles.firstAngle;
 
-        public void DriveForwardsIMU(double speed){
+
+        /*public void DriveForwardsIMU (double speed){
             //as of now, current angle is the one that changes, inital angle is the one we start with first
             double anglecorrection = 0;
             int pconstant = 0; //proportinal constant if im right+
-            /*double initalangle = currentangle();//need to change this when i figure out which is the one that changes
+            double initalangle = currentangle();//need to change this when i figure out which is the one that changes
             double anglediffernce = Math.round(initalangle - currentangle); //is this the right round? do i need to round?? who knows
 
 
@@ -58,20 +60,20 @@ public class IMUTest extends AutoOpMode {
                 anglecorrection = anglediffernce * pconstant;
             } else {
                 anglecorrection = 0;
-            }*/
+            }
             // angle correction is posivite when it needs to turn right
             //angle correction is half power to each wheel
 
 
             //consider to get the robot to strafe instead of turn ?
-            /*joules.FrontLeft.setPower(-speed - anglecorrection);
+            joules.FrontLeft.setPower(-speed - anglecorrection);
             joules.FrontRight.setPower(speed + anglecorrection);
             joules.BackLeft.setPower(-speed - anglecorrection);
-            joules.BackRight.setPower(speed + anglecorrection);*/
+            joules.BackRight.setPower(speed + anglecorrection);
+        */
+    }
 
-        }
-
-
-        }
 
 }
+
+

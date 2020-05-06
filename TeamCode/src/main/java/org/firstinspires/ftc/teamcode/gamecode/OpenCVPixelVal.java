@@ -24,6 +24,7 @@ package org.firstinspires.ftc.teamcode.gamecode;
 import android.provider.ContactsContract;
 import android.service.notification.NotificationListenerService;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
