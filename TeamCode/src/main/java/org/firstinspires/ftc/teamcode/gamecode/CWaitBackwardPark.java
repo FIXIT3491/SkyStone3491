@@ -18,6 +18,8 @@ public class CWaitBackwardPark extends AutoOpMode {
         joules.TapeMeasurePush();
         waitForStart();
 
+        //waiting
+
         joules.StrafeRight(0.5);
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),100));
         joules.Stop();
@@ -34,7 +36,6 @@ public class CWaitBackwardPark extends AutoOpMode {
         joules.DriveBackward(0.5);
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),1800));
         joules.Stop();
-
 
 
 
