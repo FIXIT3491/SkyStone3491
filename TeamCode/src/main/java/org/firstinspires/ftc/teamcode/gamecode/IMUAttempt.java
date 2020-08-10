@@ -40,10 +40,11 @@ public class IMUAttempt extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeft");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRight");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "frontLeft");
-        backRightDrive = hardwareMap.get(DcMotor.class, "frontRight");
+
+        //frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeft");
+        //frontRightDrive = hardwareMap.get(DcMotor.class, "frontRight");
+       // backLeftDrive = hardwareMap.get(DcMotor.class, "frontLeft");
+      //  backRightDrive = hardwareMap.get(DcMotor.class, "frontRight");
 
 
         // Most robots need the motor on one side to be reversed to drive forward
