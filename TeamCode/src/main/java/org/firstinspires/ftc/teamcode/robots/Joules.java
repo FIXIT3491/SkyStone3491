@@ -229,9 +229,7 @@ public class Joules  {
     public void DaffyUp(){
         Daffy.setPosition(0.4);
     }
-    public void DaffyGrab(){
-        Daffy.setPosition(1);
-    }
+    public void DaffyGrab(){ Daffy.setPosition(1); }
 
     public void SlidesUp(){
         ChainArm.setPower(-0.7);
