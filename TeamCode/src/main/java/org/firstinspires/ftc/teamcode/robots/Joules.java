@@ -234,7 +234,7 @@ public class Joules  {
 
 
     public long getSeconds(double Voltage, int Seconds){
-        return (long)((Seconds-((50*Voltage)-600)));
+        return (long)((Seconds-((500*Voltage)-6000)));
     }
 
     //Capstone

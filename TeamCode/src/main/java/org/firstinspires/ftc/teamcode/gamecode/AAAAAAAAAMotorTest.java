@@ -7,6 +7,11 @@ import org.firstinspires.ftc.teamcode.newhardware.Motor;
 import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
 import org.firstinspires.ftc.teamcode.robots.Joules;
 
+
+
+
+
+
 @Autonomous
 
 public class AAAAAAAAAMotorTest extends AutoOpMode {
