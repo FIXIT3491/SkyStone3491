@@ -15,7 +15,7 @@ public class GColorBlClFound extends AutoOpMode {
         Joules joules = new Joules();
         ColorSensor colorSensor;
 
-        colorSensor = hardwareMap.colorSensor.get("colour");
+        colorSensor = hardwareMap.colorSensor.get("colourRight");
         ExpansionHub2_VoltageSensor =  hardwareMap.voltageSensor.get("Expansion Hub 2");
 
         waitForStart();
@@ -78,7 +78,7 @@ public class GColorBlClFound extends AutoOpMode {
         sleep(100);
 
         joules.StrafeLeft(0.3);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 800));
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1000));
         joules.Stop();
 
         joules.FoundationDrop();

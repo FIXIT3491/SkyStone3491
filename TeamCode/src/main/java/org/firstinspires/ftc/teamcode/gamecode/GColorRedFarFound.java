@@ -15,13 +15,13 @@ public class GColorRedFarFound extends AutoOpMode {
         Joules joules = new Joules();
         ColorSensor colorSensor;
 
-        colorSensor = hardwareMap.colorSensor.get("colour");
+        colorSensor = hardwareMap.colorSensor.get("colourLeft");
         ExpansionHub2_VoltageSensor =  hardwareMap.voltageSensor.get("Expansion Hub 2");
 
         waitForStart();
 
 
-        int RedFoundVal = 32; //May have to change this value. the red colour sensor is already set to be programmed in Joulestest
+        int RedFoundVal = 50; //May have to change this value. the red colour sensor is already set to be programmed in Joulestest
         telemetry.addData("Status", "initialized");
         joules.FoundationDrop();
         joules.DaffyUp();

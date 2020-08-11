@@ -15,11 +15,18 @@ public class JoulesTeleOp extends TeleOpMode {
     @Override
     public void initialize() {
         joules = new Joules();
-        joules.CapDown();
+        joules.CapUp();
         joules.TapeMeasurePush();
         joules.FoundationDrop();
         telemetry.addData("Status", "Initialized");
     }
+
+    public int HoldOntoStone = 0;
+    private Boolean pushed = Boolean.FALSE;
+    private Boolean slow = Boolean.FALSE;
+    int a = 0;
+    int b = 0;
+
 
     public void loopOpMode() {
         if (joy1.leftTrigger()) {
@@ -78,20 +85,69 @@ public class JoulesTeleOp extends TeleOpMode {
 
         }
 
+        if (joy1.buttonA()){
+            joules.FoundationTowerMove();
+            telemetry.addData("task", "failed successfully");
+
+        }
+
 
         if (joy2.leftTrigger()) {
             joules.DaffyGrab();
+            telemetry.addData("Daffy", "grabbed");
 
         } else if (joy2.leftBumper()) {
             joules.DaffyUp();
+            telemetry.addData("Daffy", "up");
+        }
+        else if (pushed == Boolean.TRUE){
+            joules.DaffyGrab();
+            telemetry.addData("","Daffy Grab");
+        }
+        else {
+            joules.DaffyStop();
         }
 
-        if (joy2.rightTrigger()) {
-            joules.SlidesDown();
-        } else if (joy2.rightBumper()) {
-            joules.SlidesUp();
-        } else {
-            joules.SlidesStop();
+
+
+        if (joy2.buttonLeft()) {
+            if (a == 0) {
+                if (pushed == Boolean.FALSE) {
+                    pushed = Boolean.TRUE;
+                    telemetry.addData("boolean", "True");
+                    a = 1;
+
+                }
+                else if (pushed == Boolean.TRUE) {
+                    pushed = Boolean.FALSE;
+                    telemetry.addData("boolean", "False");
+                    a = 1;
+                }
+            }
+        }
+        else if (!joy2.buttonLeft()){
+            a = 0;
+        }
+
+
+        if (slow == Boolean.FALSE){
+            if (joy2.rightTrigger()) {
+                joules.SlidesDown();
+            } else if (joy2.rightBumper()) {
+                 joules.SlidesUp();
+            } else {
+              joules.SlidesStop();
+            }
+        }
+
+        else if (slow == Boolean.TRUE){
+            if (joy2.rightTrigger()) {
+                joules.SlidesDownSlow();
+            } else if (joy2.rightBumper()) {
+                joules.SlidesUpSlow();
+            } else {
+                joules.SlidesStop();
+            }
         }
 
         if (joy2.buttonY()) {
@@ -100,6 +156,25 @@ public class JoulesTeleOp extends TeleOpMode {
         } else if (joy2.buttonA()) {
             joules.FoundationDrop();
 
+        }
+
+        if (joy2.buttonRight()){
+            if (b == 0) {
+                if (slow == Boolean.FALSE) {
+                    slow = Boolean.TRUE;
+                    telemetry.addData("slow", "True");
+                    b = 1;
+
+                }
+                else if (slow == Boolean.TRUE) {
+                    slow = Boolean.FALSE;
+                    telemetry.addData("slow", "False");
+                    b = 1;
+                }
+            }
+        }
+        else if (!joy2.buttonRight()){
+            b = 0;
         }
 
 
