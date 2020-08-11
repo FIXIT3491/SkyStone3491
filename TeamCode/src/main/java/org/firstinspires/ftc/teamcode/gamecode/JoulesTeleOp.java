@@ -86,7 +86,7 @@ public class JoulesTeleOp extends TeleOpMode {
         }
 
         if (joy1.buttonA()){
-            joules.FoundationTowerMove();
+           // joules.FoundationTowerMove();
             telemetry.addData("task", "failed successfully");
 
         }
@@ -140,15 +140,15 @@ public class JoulesTeleOp extends TeleOpMode {
             }
         }
 
-        else if (slow == Boolean.TRUE){
-            if (joy2.rightTrigger()) {
-                joules.SlidesDownSlow();
-            } else if (joy2.rightBumper()) {
-                joules.SlidesUpSlow();
-            } else {
-                joules.SlidesStop();
-            }
-        }
+//        else if (slow == Boolean.TRUE){
+//            if (joy2.rightTrigger()) {
+//                joules.SlidesDownSlow();
+//            } else if (joy2.rightBumper()) {
+//                joules.SlidesUpSlow();
+//            } else {
+//                joules.SlidesStop();
+//            }
+//        }
 
         if (joy2.buttonY()) {
             joules.FoundationGrab();

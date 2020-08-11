@@ -1,11 +1,7 @@
-
 package org.firstinspires.ftc.teamcode.robots;
-
-
 
 import android.graphics.Paint;
 import android.hardware.Sensor;
-import android.util.Log;
 
 import org.firstinspires.ftc.teamcode.RC;
 import org.firstinspires.ftc.teamcode.newhardware.FXTCRServo;
@@ -14,8 +10,6 @@ import org.firstinspires.ftc.teamcode.newhardware.FXTSensors.FXTAnalogUltrasonic
 import org.firstinspires.ftc.teamcode.newhardware.FXTServo;
 import org.firstinspires.ftc.teamcode.newhardware.Motor;
 import org.firstinspires.ftc.teamcode.roboticslibrary.TaskHandler;
-
-import com.qualcomm.hardware.lynx.LynxEmbeddedIMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
@@ -27,7 +21,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 //import com.qualcomm.robotcore.util.ElapsedTime;​
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -36,28 +29,22 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
-import org.firstinspires.ftc.teamcode.util.MathUtils;
 //import org.firstinspires.ftc.robotcore.external.Func;​
 import java.util.Locale;
 
 
 
 public class Joules  {
-    public Motor LinearSlides;
     public Motor FrontRight;
     public Motor FrontLeft;
     public Motor BackRight;
     public Motor BackLeft;
     private String VEER_CHECK_TASK_KEY = "Joules.VEERCHECK";
-    private VoltageSensor ExpansionHub2_VoltageSensor;
-    ColorSensor colorSensorLeft;
-    ColorSensor colorSensorRight;
-    ColorSensor colorSensordown;
+
     public Boolean ScissorUp = Boolean.FALSE;
     public Boolean ScissorDown = Boolean.FALSE;
-    public LynxEmbeddedIMU imu;
-    int bluetapeval = 27;
 
+    public BNO055IMU imu;
     Orientation angles;
     Acceleration gravity;
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -73,7 +60,8 @@ public class Joules  {
 
     //Capstone
     private FXTServo Capstone;
-    private FXTCRServo Daffy;
+    private FXTServo Daffy;
+    private FXTCRServo ChainArm;
 
 
     public static int STONESTATE;
@@ -100,15 +88,16 @@ public class Joules  {
         FrontLeft = new Motor("frontL");
         BackRight = new Motor("backR");
         BackLeft = new Motor("backL");
-        LinearSlides = new Motor("Linear Slides");
 
         Foundation = new FXTServo("Foundation mover");
 
-        Daffy = new FXTCRServo("Daffy");
+        Daffy = new FXTServo("Box grabber");
 
         TapeMeasure = new FXTServo("Tape Measure");
 
         StoneMover = new FXTServo("Stone mover");
+
+        ChainArm =  new FXTCRServo("Scoring arm");
 
         ScissorLift = new FXTServo("ScissorLift");
 
@@ -118,35 +107,6 @@ public class Joules  {
         FrontLeft.setMinimumSpeed(0.1);
         BackRight.setMinimumSpeed(0.1);
         BackLeft.setMinimumSpeed(0.1);
-
-        BNO055IMU.Parameters params = new BNO055IMU.Parameters();
-        params.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        params.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-
-        imu = (LynxEmbeddedIMU) RC.h.get(BNO055IMU.class, "imu");
-        imu.initialize(params);
-
-    }
-
-    public void SlidesUp() {
-        LinearSlides.setPower(1);
-    }
-
-    public void SlidesDown() {
-        LinearSlides.setPower(-1);
-    }
-
-    public void SlidesUpSlow() {
-        LinearSlides.setPower(0.4);
-    }
-
-    public void SlidesDownSlow() {
-        LinearSlides.setPower(-0.4);
-    }
-
-
-    public void SlidesStop() {
-        LinearSlides.setPower(0);
     }
 
 
@@ -215,34 +175,16 @@ public class Joules  {
         BackRight.setPower(0);
     }
 
-
-
-    public void FoundationTowerMove() {
-        DriveBackward(0.5);
-        RC.l.sleep(200);
-        Stop();
-
-        FoundationDrop();
-        RC.l.sleep(2000);
-        Stop();
-
-        DaffyUp();
-        RC.l.sleep(2000);
-        Stop();
-    }
-
-
-
     public long getSeconds(double Voltage, int Seconds){
-        return (long)((Seconds-((500*Voltage)-6000)));
+        return (long)((Seconds-((50*Voltage)-600)));
     }
 
     //Capstone
     public void CapDown(){
-        Capstone.setPosition(0.5);
+        Capstone.setPosition(1);
     }
     public void CapUp(){
-        Capstone.setPosition(1);
+        Capstone.setPosition(0.05);
     }
 
 
@@ -272,8 +214,6 @@ public class Joules  {
 
 
 
-
-
     public void StoneDown(){
         StoneMover.setPosition(0.1);
 
@@ -287,15 +227,21 @@ public class Joules  {
   //  }
 
     public void DaffyUp(){
-        Daffy.setPower(0.6);
+        Daffy.setPosition(0.4);
     }
-    public void DaffyGrab(){
-        Daffy.setPower(-0.6);
+    public void DaffyGrab(){ Daffy.setPosition(1); }
+
+    public void DaffyStop() { Daffy.setPosition(0.7);} //not sure this is just radom
+
+    public void SlidesUp(){
+        ChainArm.setPower(-0.7);
     }
-    public void DaffyStop() {Daffy.setPower(0);}
-
-
-
+    public void SlidesDown(){
+        ChainArm.setPower(0.7);
+    }
+    public void SlidesStop(){
+        ChainArm.setPower(0);
+    }
 
     public void DriveBackwardEnc(double speed){
         TaskHandler.pauseTask(VEER_CHECK_TASK_KEY);
@@ -337,122 +283,6 @@ public class Joules  {
 
 
 
-    public int getAngle(){
-
-        return 3;
-    }
 
 
-    public boolean Straight(double initialangle, double speed){
-        double currentAngle = MathUtils.cvtAngleToNewDomain(getAngle());
-        if ((currentAngle == initialangle)){
-            return true;
-        }
-        else{
-            return false;
-        }
-
-    }
-
-//    public void OnFoundBothBlue(){
-//        DaffyUp();
-//        RC.l.sleep( 2000);
-//        DaffyStop();
-//
-//        DriveForward(0.4);
-//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 650));
-//        Stop();
-//
-//        DriveForward(0.2);
-//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 600));
-//        Stop();
-//
-//        DaffyGrab();
-//        RC.l.sleep(2000);
-//
-//        SlidesUp();
-//        RC.l.sleep(100);
-//        SlidesStop();
-//
-//        DriveBackward(0.3);
-//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 350));
-//        Stop();
-//
-//        StrafeLeft(0.5);
-//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 2000));
-//        Stop();
-//
-//
-//        SlidesUp();
-//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),800));
-//        SlidesStop();
-//
-//
-//        StrafeLeft(0.3);
-//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1000));
-//        Stop();
-//        RC.l.sleep(500);
-//
-//        RC.l.clearTimer(1);
-//        while (opModeIsActive() && getSeconds(1) < 2000 && colorSensorRight.blue() < bluetapeval) {
-//            DriveForward(0.1);
-//
-//        }
-//        Stop();
-//
-//        SlidesDown();
-//        FoundationGrab();
-//        RC.l.sleep(100);
-//        SlidesStop();
-//        RC.l.sleep(1500);
-//
-//        DriveBackward(0.5);
-//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 600));
-//        Stop();
-//
-//        StrafeRight(0.3);
-//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 600));
-//        Stop();
-//
-//        TurnRight(0.5);
-//        RC.l.sleep(750);
-//        Stop();
-//
-//        DriveForward(0.5);
-//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 900));
-//        Stop();
-//
-//        FoundationDrop();
-//        RC.l.sleep(2000);
-//
-//        DaffyUp();
-//        RC.l.sleep(1000);
-//        Stop();
-//
-//        DriveBackward(0.3);
-//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1200));
-//        Stop();
-//
-//    }
-
-    public void imuTurnR(double degrees, double speed) {
-
-        double beginAngle = MathUtils.cvtAngleToNewDomain(getAngle());
-        //Assigns begin angle and target angle
-        double targetAngle = MathUtils.cvtAngleToNewDomain(beginAngle + degrees);
-
-        while (RC.l.opModeIsActive()) {
-
-            double currentAngle = MathUtils.cvtAngleToNewDomain(getAngle());
-            //figure out curret angl
-            double angleToTurn = MathUtils.cvtAngleJumpToNewDomain(targetAngle - currentAngle);
-
-            Log.i("Angle", currentAngle + "");
-
-            TurnRight(speed);
-
-        }//while
-
-
-    }//imuTurnR
 }
