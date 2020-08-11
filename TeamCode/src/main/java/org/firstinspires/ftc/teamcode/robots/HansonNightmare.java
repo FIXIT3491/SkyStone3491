@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.robots;
 import org.firstinspires.ftc.teamcode.newhardware.Motor;
 import org.firstinspires.ftc.teamcode.roboticslibrary.TaskHandler;
 
-public class HansonNightmare extends Robot{
+public class HansonNightmare{
     public Motor FrontRight;
     public Motor FrontLeft;
     public Motor BackRight;

@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.gamecode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
 import org.firstinspires.ftc.teamcode.robots.HansonNightmare;
 
+@Autonomous
 public class BasicAutoHanson extends AutoOpMode {
     public void runOp() throws InterruptedException {
         HansonNightmare hansonNightmare = new HansonNightmare();
