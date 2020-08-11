@@ -44,7 +44,7 @@ public class Joules  {
     public Boolean ScissorUp = Boolean.FALSE;
     public Boolean ScissorDown = Boolean.FALSE;
 
-    BNO055IMU imu;
+    public BNO055IMU imu;
     Orientation angles;
     Acceleration gravity;
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -230,6 +230,8 @@ public class Joules  {
         Daffy.setPosition(0.4);
     }
     public void DaffyGrab(){ Daffy.setPosition(1); }
+
+    public void DaffyStop() { Daffy.setPosition(0.7);} //not sure this is just radom
 
     public void SlidesUp(){
         ChainArm.setPower(-0.7);
