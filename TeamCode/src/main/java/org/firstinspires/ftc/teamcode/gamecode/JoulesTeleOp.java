@@ -29,7 +29,8 @@ public class JoulesTeleOp extends TeleOpMode {
 
 
     public void loopOpMode() {
-        if (joy1.leftTrigger()) {
+        //driving
+        if (joy1.leftTrigger()) { //slow button, speed is divided by 2
             float pivot = gamepad1.right_stick_y / 2;
             float horizontal = -gamepad1.right_stick_x / 2;
             float vertical = gamepad1.left_stick_x / 2;

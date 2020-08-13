@@ -29,9 +29,11 @@
 
 package org.firstinspires.ftc.teamcode.gamecode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -83,7 +85,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 
 
-@TeleOp(name="SKYSTONE Vuforia Nav", group ="Concept")
+@Autonomous
 
 public class VuforiaTest extends LinearOpMode {
 
@@ -137,6 +139,19 @@ public class VuforiaTest extends LinearOpMode {
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
+
+
+    //driving
+    private DcMotor leftDrive = null;
+    private DcMotor rightDrive = null;
+
+    private double get_speed(int x_max_dist, int x_goal_dist, double speed_max, double distance){
+        int x_range = Math.abs(x_max_dist - x_goal_dist);
+        //convert the distances into speeds
+
+        return(((distance - x_goal_dist) * speed_max) / x_range);
+
+    }
 
     @Override public void runOpMode() {
         /*
@@ -298,8 +313,8 @@ public class VuforiaTest extends LinearOpMode {
         final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
-                    .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
         /**  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables) {
@@ -312,7 +327,16 @@ public class VuforiaTest extends LinearOpMode {
         // CONSEQUENTLY do not put any driving commands in this loop.
         // To restore the normal opmode structure, just un-comment the following line:
 
-        // waitForStart();
+
+        //driving
+        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
+        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+
+        leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightDrive.setDirection(DcMotor.Direction.REVERSE);
+
+
+        waitForStart();
 
         // Note: To use the remote camera preview:
         // AFTER you hit Init on the Driver Station, use the "options menu" to select "Camera Stream"
@@ -348,10 +372,48 @@ public class VuforiaTest extends LinearOpMode {
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+
+                ///
+                float x_val = translation.get(0);
+                float y_val = translation.get(1);
+                float z_val = translation.get(2);
+
+                int x_max_dist = 5; //5 cm would be where the robot starts to slow down
+                int x_goal_dist = 1; //1 cm would be where the robot stops
+                int x_range = Math.abs(x_max_dist - x_goal_dist);
+
+
+                double speed_max = 0.3; //this would be the fastest speed the robot goes, speed min would be 0
+
+                //convert the distances into speeds
+
+
+
+                if (y_val > 0){
+                    double current_speed = get_speed(x_max_dist, x_goal_dist, speed_max, y_val);
+                    leftDrive.setPower(-current_speed);
+                    rightDrive.setPower(0);
+
+                    telemetry.addData("right backwards", "y_val is positive"); //the wheels of the driver bot are in the back
+                } //positive when left
+                else {
+                    double current_speed = get_speed(x_max_dist, x_goal_dist, speed_max, y_val);
+                    leftDrive.setPower(0);
+                    rightDrive.setPower(-current_speed);
+                    telemetry.addData("left backwards", "y_vale is negative");//the wheels of the driver bot are in the back
+                }
+
+                telemetry.addData("", translation.get(0));
+
             }
             else {
                 telemetry.addData("Visible Target", "none");
+                leftDrive.setPower(0);
+                rightDrive.setPower(0);
+
             }
+
+
             telemetry.update();
         }
 
