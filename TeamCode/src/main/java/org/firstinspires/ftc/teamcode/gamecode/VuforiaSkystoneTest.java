@@ -321,19 +321,20 @@ public class VuforiaTest extends LinearOpMode {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }
 
-        // WARNING:
-        // In this sample, we do not wait for PLAY to be pressed.  Target Tracking is started immediately when INIT is pressed.
-        // This sequence is used to enable the new remote DS Camera Preview feature to be used with this sample.
-        // CONSEQUENTLY do not put any driving commands in this loop.
-        // To restore the normal opmode structure, just un-comment the following line:
-
-
-        //driving
         leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
 
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        // WARNING:
+        // In this sample, we do not wait for PLAY to be pressed.  Target Tracking is started immediately when INIT is pressed.
+        // This sequence is used to enable the new remote DS Camera Preview feature to be used with this sample.
+        // CONSEQUENTLY do not put any driving commands in this loop.
+        // To restore the normal opmode structure, just add wait for start:
+
+
+        //driving
 
 
         waitForStart();
@@ -378,32 +379,53 @@ public class VuforiaTest extends LinearOpMode {
                 float y_val = translation.get(1);
                 float z_val = translation.get(2);
 
+                float x_rot = rotation.firstAngle;
+                float y_rot = rotation.secondAngle;
+                float z_rot = rotation.thirdAngle;
+
+
+
+
+//                if (y_val > 0){
+//                    double current_speed = get_speed(x_max_dist, x_goal_dist, speed_max, y_val);
+//                    rightDrive.setPower(-current_speed);
+//                    leftDrive.setPower(0);
+//
+//                    telemetry.addData("right backwards", "y_val is positive"); //the wheels of the driver bot are in the back
+//                } //positive when left
+//                else {
+//                    double current_speed = get_speed(x_max_dist, x_goal_dist, speed_max, y_val);
+//                    rightDrive.setPower(0);
+//                    leftDrive.setPower(current_speed);
+//                    telemetry.addData("left backwards", "y_vale is negative");//the wheels of the driver bot are in the back
+//                }
                 int x_max_dist = 5; //5 cm would be where the robot starts to slow down
                 int x_goal_dist = 1; //1 cm would be where the robot stops
-                int x_range = Math.abs(x_max_dist - x_goal_dist);
-
 
                 double speed_max = 0.3; //this would be the fastest speed the robot goes, speed min would be 0
 
-                //convert the distances into speeds
+                while (Math.abs(x_val) > 1 && opModeIsActive()){
+                    if (89 < x_rot && x_rot < 92){
+                        double current_speed = get_speed(x_max_dist, x_goal_dist, speed_max, y_val);
+                        rightDrive.setPower(-0.3);
+                        leftDrive.setPower(-0.3);
+                        telemetry.addData("Staright", x_rot);
+                    }
+                    else if (x_rot > 92){
+                        rightDrive.setPower(0);
+                        leftDrive.setPower(-0.3);
+                        telemetry.addData("left forwards", x_rot);
 
+                    }
+                    else if (x_rot < 89){
+                        rightDrive.setPower(-0.3);
+                        leftDrive.setPower(0);
+                        telemetry.addData("right forwards", x_rot);
+                    }
 
-
-                if (y_val > 0){
-                    double current_speed = get_speed(x_max_dist, x_goal_dist, speed_max, y_val);
-                    leftDrive.setPower(-current_speed);
-                    rightDrive.setPower(0);
-
-                    telemetry.addData("right backwards", "y_val is positive"); //the wheels of the driver bot are in the back
-                } //positive when left
-                else {
-                    double current_speed = get_speed(x_max_dist, x_goal_dist, speed_max, y_val);
-                    leftDrive.setPower(0);
-                    rightDrive.setPower(-current_speed);
-                    telemetry.addData("left backwards", "y_vale is negative");//the wheels of the driver bot are in the back
                 }
 
-                telemetry.addData("", translation.get(0));
+
 
             }
             else {
