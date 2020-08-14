@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.robots;
 
 import org.firstinspires.ftc.teamcode.newhardware.Motor;
-import org.firstinspires.ftc.teamcode.roboticslibrary.TaskHandler;
 
 public class HansonNightmare{
     public Motor FrontRight;
@@ -22,7 +21,7 @@ public class HansonNightmare{
         BackLeft.setMinimumSpeed(0.1);
     }
 
-    //Teleop
+    //Robot Driving
     public void driveL(double speed){
         FrontLeft.setPower(-speed);
         BackLeft.setPower(-speed);
@@ -31,8 +30,6 @@ public class HansonNightmare{
         FrontRight.setPower(-speed);
         BackRight.setPower(-speed);
     }
-
-    //Autonomous
     public void DriveForward(double speed){
         FrontLeft.setPower(-speed);
         FrontRight.setPower(speed);
@@ -45,12 +42,24 @@ public class HansonNightmare{
         BackLeft.setPower(speed);
         BackRight.setPower(-speed);
     }
-
+    public void StrafeLeft(double speed){
+        FrontLeft.setPower(speed);
+        FrontRight.setPower(speed);
+        BackLeft.setPower(-speed);
+        BackRight.setPower(-speed);
+    }
+    public void StrafeRight(double speed){
+        FrontLeft.setPower(-speed);
+        FrontRight.setPower(-speed);
+        BackLeft.setPower(speed);
+        BackRight.setPower(speed);
+    }
     public void TurnLeft(double speed){
         FrontLeft.setPower(-speed);
         FrontRight.setPower(-speed);
         BackLeft.setPower(-speed);
         BackRight.setPower(-speed);
+
     }
     public void TurnRight(double speed){
         FrontLeft.setPower(speed);
@@ -58,6 +67,7 @@ public class HansonNightmare{
         BackLeft.setPower(speed);
         BackRight.setPower(speed);
     }
+
     public void Stop(){
         FrontLeft.setPower(0);
         FrontRight.setPower(0);
